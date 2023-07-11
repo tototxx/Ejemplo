@@ -5,9 +5,9 @@ import config
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'plaza'
-app.config['MYSQL_PASSWORD'] = 'fitness'
-app.config['MYSQL_DB'] = 'plaza3dev'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_DB'] = 'diosseapp'
 app.config["SECRET_KEY"] = config.HEX_SEC_KEY
 
 mysql = MySQL(app)
@@ -18,17 +18,16 @@ def loginpro():
     password = request.form["password"]
 
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM user WHERE username = %s", {email})
+    cur.execute("SELECT * FROM empleados WHERE correo =%s AND contraseña =%s", (email,password,))
     user = cur.fetchone()
     cur.close()
 
     if user is None:
-        return render_template("index.html", message="Usuario o contraseña incorrectos")    
+        return render_template("authentication-login.html", message="Usuario o contraseña incorrectos")    
 
-    if user[2] != password:
-        return render_template("index.html", message="Usuario o contraseña incorrectos")
+ 
 
-    session["email"] = user[1]
+    session["email"] = user[4]
 
     return redirect(url_for('index'))
 
@@ -53,7 +52,7 @@ def index():
 @app.route('/personal')
 def personal():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT nombre, apellido, dni, cp FROM cliente")
+    cur.execute("SELECT nombre, rol,correo, dni FROM empleados where estado = 'a' ")
     data = cur.fetchall()
     cur.close()
     return render_template('personal.html', personal=data)
