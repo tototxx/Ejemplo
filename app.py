@@ -63,6 +63,7 @@ def personal():
 #         return redirect("/")
     
 
+
 #     username = request.form["email"].strip().lower()
 #     password = request.form["clave"]
 #     password2 = request.form["clave2"]
